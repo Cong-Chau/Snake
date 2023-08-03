@@ -1,9 +1,8 @@
 #include"Header.h"
-int height = 10;
-int width = 20;
-int length = 2;
+
+
 //Toa do dau ran
-Coordinates snake;
+Snake snake;
 //Toa do trai cay
 Coordinates fruit;
 
@@ -13,66 +12,72 @@ int Random(int min, int max) {
 	int ran = min + r % max;
 	return ran;
 }
+void gotoxy(int x, int y)//Ham toa do
+{
+	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD a = { x, y };    SetConsoleCursorPosition(h, a);
+}
 
 //Khoi tao vi tri dau ran
-void initFirstLocal() {
-	snake.x = Random(1, 8);
-	snake.y = Random(1, 18);
-}
-//Khoi tao vi tri cua trai cay
-void initFruit() {
-	fruit.x = Random(1, 8);
-	while (fruit.x == snake.x) {
-		fruit.x = Random(1, 8);
-	}
-	fruit.y = Random(1, 18);
-	while (fruit.y == snake.y) {
-		fruit.y = Random(1, 18);
+void initSnake() {
+	snake.length = 3;
+	int x = 5, y = 4;
+	for (int i = 0; i < snake.length; i++,x--) {
+		snake.point[i].x = x;
+		snake.point[i].y = y;
+		gotoxy(x, y);
+		cout << "x";
 	}
 }
 
+bool checkCOOR_Fr_Sn() {
+	for (int i = 0; i < snake.length; i++) {
+		if (fruit.x == snake.point[i].x && fruit.y == snake.point[i].y) {
+			return false;
+		}
+	}
+	return true;
+}
+void initFruit() {
+	fruit.x = Random(1, 18);
+	fruit.y = Random(1, 8);
+	while (!checkCOOR_Fr_Sn) {
+		fruit.x = Random(1, 18);
+		fruit.y = Random(1, 8);
+	}
+	gotoxy(fruit.x, fruit.y);
+	cout << "o";
+}
 
 void Map() {
 	system("cls");
 	//Hien thi
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 20; j++) {
-			if (i == 0 || i == 9) {
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 10; j++) {
+			if (i == 0 || i == 19) {
+				gotoxy(i, j);
 				cout << "#";
 				continue;
 			}
-			if (j == 0 || j == 19) {
+			if (j == 0 || j == 9) {
+				gotoxy(i, j);
 				cout << "#";
-				continue;
-			}
-			if (0 < i && i < 10) {
-				if (0 < j && j < 20) {		
-					//
-					if (i == snake.x && j == snake.y) {
-						cout << "X";
-					}					
-					//
-					if (i == fruit.x && j == fruit.y) {
-						cout << "o";
-					}
-					if ((i != snake.x && j != snake.y) || (i != fruit.x  && j != fruit.y)) {
-						cout << " ";
-					}
-				}
 				continue;
 			}
 		}
-		cout << endl;
 	}
+	cout << endl;
 	cout << " Score: ";
-	int a; cin >> a;
-	initFruit();
+	
 }
 
+
+
 void PlayGame() {
-	initFirstLocal();
+	// Tao khung tro choi
+	Map();
+	initSnake();
 	initFruit();
-	for (int i = 0; i < 3; i++) {
-		Map();
-	}
+
+	gotoxy(0, 15);
 }
