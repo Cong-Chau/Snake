@@ -20,7 +20,12 @@ struct Snake {
 };
 
 
-
 int Random(int min, int max);
-void Map();
+void gotoxy(int x, int y);
+void initSnake(Snake& snake);
+bool checkCOOR_Fr_Sn(Snake snake, Coordinates fruit);
+void initFruit(Coordinates& fruit);
+void Map(int score);
+bool checkLose(Snake snake);
+void Move(Snake& snake, Coordinates& fruit, int& score);
 void PlayGame();
