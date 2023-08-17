@@ -4,16 +4,15 @@
 #include<ctime>
 #include<Windows.h>
 #include<conio.h>
-#define TIMEOUT 1
+#include<chrono>
+#define TIMEOUT 0.05
+#define TIMEOUT_MS 500
 using namespace std;
-
+using namespace chrono;
 struct Coordinates {
 	int x, y;
 };
 
-enum {
-	RIGHT, LEFT, UP, DOWN
-};
 
 struct Snake {
 	Coordinates point[100];
@@ -112,6 +111,20 @@ int checkTime() {
 	return v1;
 }
 
+int checkTime2() {
+	auto start_time = high_resolution_clock::now();
+	int v1 = ' '; // default key press
+
+	while (duration_cast<chrono::milliseconds>(high_resolution_clock::now() - start_time).count() < TIMEOUT_MS) {
+		if (_kbhit()) {
+			v1 = _getch();
+			break;
+		}
+	}
+	return v1;
+}
+
+
 void Move(Snake& snake, Coordinates& fruit, int& score) {
 	Coordinates speeds;
 	speeds.x = 1;
@@ -139,7 +152,7 @@ void Move(Snake& snake, Coordinates& fruit, int& score) {
 		vector.x = snake.point[0].x;
 		vector.y = snake.point[0].y;
 
-		int v1 = checkTime();
+		int v1 = checkTime2();
 		if (v1 == 'w') {
 			speeds.x = 0;
 			speeds.y = -1;
