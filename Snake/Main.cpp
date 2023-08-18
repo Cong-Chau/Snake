@@ -23,7 +23,6 @@ struct Snake {
 
 int wight = 40;
 int heigth = 20;
-int speed = 100;
 
 int Random(int min, int max) {
 	srand(time(NULL));
@@ -86,11 +85,10 @@ void Map(int score) {
 }
 
 bool checkLose(Snake snake) {
-	if (snake.point[0].x == 0 || snake.point[0].x == wight - 1)
+	/*if (snake.point[0].x == 0 || snake.point[0].x == wight - 1)
 		return true;
 	if (snake.point[0].y == 0 || snake.point[0].y == heigth - 1)
-		return true;
-	//Chua the text
+		return true;*/
 	for (int i = 1; i < snake.length; i++) {
 		if (snake.point[0].x == snake.point[i].x && snake.point[0].y == snake.point[i].y)
 			return true;
@@ -124,6 +122,16 @@ int checkTime2() {
 	return v1;
 }
 
+void checkTouch_Wall(Snake& snake) {
+	if (snake.point[0].x == 0)
+		snake.point[0].x = wight - 2;
+	if (snake.point[0].x == wight - 1)
+		snake.point[0].x = 1;
+	if (snake.point[0].y == 0)
+		snake.point[0].y = heigth - 2;
+	if (snake.point[0].y == heigth - 1)
+		snake.point[0].y = 1;
+}
 
 void Move(Snake& snake, Coordinates& fruit, int& score) {
 	Coordinates speeds;
@@ -173,15 +181,18 @@ void Move(Snake& snake, Coordinates& fruit, int& score) {
 			speeds.y = 0;
 		}
 
-		for (int i = snake.length; i > 0; i--) {
-			snake.point[i].x = snake.point[i - 1].x;
-			snake.point[i].y = snake.point[i - 1].y;
+		if (snake.length != 1) {
+			for (int i = snake.length; i > 0; i--) {
+				snake.point[i].x = snake.point[i - 1].x;
+				snake.point[i].y = snake.point[i - 1].y;
+			}
 		}
 
 		snake.point[0].x = vector.x + speeds.x;
 		snake.point[0].y = vector.y + speeds.y;
 
-		gotoxy(0, 0);
+		checkTouch_Wall(snake);
+
 		if (snake.point[0].x == fruit.x && snake.point[0].y == fruit.y) {
 			snake.length++;
 			initFruit(snake, fruit);
